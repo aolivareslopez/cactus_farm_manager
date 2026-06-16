@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Plant {
+  id        Int       @id @default(autoincrement())
+  name      String
+  species   String?
+  location  String?
+  quantity  Int       @default(1)
+  status    String    @default("healthy")
+  forSale   Boolean   @default(false)
+  price     Float?
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  careLogs  CareLog[]
+  photos    Photo[]
+}
+
+model CareLog {
+  id        Int      @id @default(autoincrement())
+  plantId   Int
+  plant     Plant    @relation(fields: [plantId], references: [id])
+  type      String
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  plantId   Int
+  plant     Plant    @relation(fields: [plantId], references: [id])
+  url       String
+  createdAt DateTime @default(now())
+}
